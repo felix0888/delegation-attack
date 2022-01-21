@@ -19,6 +19,11 @@ async function main() {
   const delegation = await Delegation.deploy(delegate.address);
   console.log("Delegation address: ", await delegation.address);
   console.log("Account balance after Delegation deploy: ", (await deployer.getBalance()).toString());
+
+  const DelegationAttack = await ethers.getContractFactory("DelegationAttack");
+  const delegationAttack = await DelegationAttack.deploy();
+  console.log("DelegationAttack address: ", await delegationAttack.address);
+  console.log("Account Balance after DelegationAttack deploy: ", (await deployer.getBalance()).toString());
 }
 
 // We recommend this pattern to be able to use async/await everywhere
