@@ -1,42 +1,74 @@
-# Advanced Sample Hardhat Project
+# Delegation Attack
 
-This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.
+Smart Contract Security Practice | Lv6 Delegation Attack
 
-The project comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts. It also comes with a variety of other tools, preconfigured to work with the project code.
-
-Try running some of the following tasks:
-
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-npx hardhat help
-REPORT_GAS=true npx hardhat test
-npx hardhat coverage
-npx hardhat run scripts/deploy.js
-node scripts/deploy.js
-npx eslint '**/*.js'
-npx eslint '**/*.js' --fix
-npx prettier '**/*.{json,sol,md}' --check
-npx prettier '**/*.{json,sol,md}' --write
-npx solhint 'contracts/**/*.sol'
-npx solhint 'contracts/**/*.sol' --fix
+```
+!!! DON'T TRY ON MAINNET !!!
 ```
 
-# Etherscan verification
+## Summary
+The goal of this level is for you to claim ownership of the instance you are given.
 
-To try out Etherscan verification, you first need to deploy a contract to an Ethereum network that's supported by Etherscan, such as Ropsten.
+#### Things might help:
+- Look into Solidity's documentation on the delegatecall low level function, how it works, how it can be used to delegate operations to on-chain libraries, and what implications it has on execution scope.
+- Fallback methods
+- Method ids
 
-In this project, copy the .env.example file to a file named .env, and then edit it to fill in the details. Enter your Etherscan API key, your Ropsten node URL (eg from Alchemy), and the private key of the account which will send the deployment transaction. With a valid .env file in place, first deploy your contract:
+#### What you will learn:
+- Low level calls in Solidity
+- `call` vs `delegatecall` vs `staticcall`
+- How to get/use function signature?
+- What is `fallback`
 
-```shell
-hardhat run --network ropsten scripts/deploy.js
+## Smart Contract Code
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.6.0;
+
+contract Delegate {
+
+  address public owner;
+
+  constructor(address _owner) public {
+    owner = _owner;
+  }
+
+  function pwn() public {
+    owner = msg.sender;
+  }
+}
+
+contract Delegation {
+
+  address public owner;
+  Delegate delegate;
+
+  constructor(address _delegateAddress) public {
+    delegate = Delegate(_delegateAddress);
+    owner = msg.sender;
+  }
+
+  fallback() external {
+    (bool result,) = address(delegate).delegatecall(msg.data);
+    if (result) {
+      this;
+    }
+  }
+}
 ```
 
-Then, copy the deployment address and paste it in to replace `DEPLOYED_CONTRACT_ADDRESS` in this command:
+## Solidity Concepts
+#### Transaction
+#### Low level calls & Function Signature
+#### `delegatecall` vs `call` vs `staticcall`
+#### `fallback` methods
 
-```shell
-npx hardhat verify --network ropsten DEPLOYED_CONTRACT_ADDRESS "Hello, Hardhat!"
-```
+## Security Risk
+#### What security risk it has?
+
+#### How to fix it?
+
+## Deploy & Test
+#### Installation
+#### Deployment
+#### Test
