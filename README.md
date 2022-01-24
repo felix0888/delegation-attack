@@ -139,7 +139,7 @@ On the `DelegationAttack` contract, it tries to call `pwn` function of `Delegati
 ```solidity
 (bool result,) = address(delegate).delegatecall(msg.data);
 ```
-This will directly interact with `Delegate` contract with `msg.data` which encorded data of `pwn()` function signature and parameter(no parameter here). Finally the `pwn` of `Delegate` contract is called.
+This will directly interact with `Delegate` contract with `msg.data` which encoded data of `pwn()` function signature and parameter(no parameter here). Finally the `pwn` of `Delegate` contract is called.
 You've already seen how storage works in `delegatecall` and `owner` state variable in `Delegate` contract is mapped to the `owner` in the `Delegation` contract.
 So `owner = msg.sender;` in `pwn` function actually changes the `owner` of the `Delegation` contract.
 
